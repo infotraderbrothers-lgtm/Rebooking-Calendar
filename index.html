@@ -52,10 +52,13 @@
             align-items: center;
             justify-content: center;
             border: 3px solid #bc9c22;
-            font-size: 9px;
-            color: #999;
-            text-align: center;
-            padding: 10px;
+            overflow: hidden;
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .info-item {
@@ -259,6 +262,164 @@
             color: #e0e0e0;
         }
 
+        .confirm-btn {
+            background: #bc9c22;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-top: 15px;
+            transition: all 0.2s;
+        }
+
+        .confirm-btn:hover {
+            background: #d4b128;
+        }
+
+        .confirm-btn:disabled {
+            background: #555;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: #2d2d2d;
+            border-radius: 16px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid #bc9c22;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            color: #bc9c22;
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .modal-info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 15px;
+            background: #3a3a3a;
+            border-radius: 8px;
+            border: 1px solid rgba(188, 156, 34, 0.2);
+        }
+
+        .modal-info-label {
+            color: #999;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .modal-info-value {
+            color: #e0e0e0;
+            font-size: 13px;
+            text-align: right;
+        }
+
+        .modal-exit-btn {
+            width: 100%;
+            background: #bc9c22;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .modal-exit-btn:hover {
+            background: #d4b128;
+        }
+
+        .thank-you-screen {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .thank-you-screen.active {
+            display: block;
+        }
+
+        .thank-you-logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 3px solid #bc9c22;
+        }
+
+        .thank-you-logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .thank-you-title {
+            color: #bc9c22;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .thank-you-message {
+            color: #e0e0e0;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .thank-you-note {
+            color: #999;
+            font-size: 14px;
+            line-height: 1.6;
+            font-style: italic;
+        }
+
         @media (max-width: 900px) {
             .main-container {
                 grid-template-columns: 1fr;
@@ -305,7 +466,7 @@
         <!-- Left Panel: Client Information -->
         <div class="left-panel">
             <div class="logo-container">
-                Place Logo Here
+                <img src="https://github.com/infotraderbrothers-lgtm/traderbrothers-assets-logo/blob/main/Trader%20Brothers.png?raw=true" alt="Trader Brothers Logo">
             </div>
 
             <div class="info-item">
@@ -379,6 +540,53 @@
                 <div class="time-slot" data-time="04:00">4:00pm</div>
                 <div class="time-slot" data-time="04:30">4:30pm</div>
                 <div class="time-slot" data-time="05:00">5:00pm</div>
+            </div>
+            
+            <button class="confirm-btn" id="confirmBtn" disabled>Confirm Booking</button>
+        </div>
+    </div>
+
+    <!-- Modal for Booking Confirmation -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div id="confirmationSection">
+                <h2 class="modal-header">Booking Confirmation</h2>
+                <div class="modal-info-section">
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Name:</span>
+                        <span class="modal-info-value" id="modalName"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Email:</span>
+                        <span class="modal-info-value" id="modalEmail"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Phone:</span>
+                        <span class="modal-info-value" id="modalPhone"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Appointment Date:</span>
+                        <span class="modal-info-value" id="modalNewDate"></span>
+                    </div>
+                    <div class="modal-info-item">
+                        <span class="modal-info-label">Appointment Time:</span>
+                        <span class="modal-info-value" id="modalNewTime"></span>
+                    </div>
+                </div>
+                <button class="modal-exit-btn" id="finishBtn">Finish</button>
+            </div>
+
+            <div class="thank-you-screen" id="thankYouSection">
+                <div class="thank-you-logo">
+                    <img src="https://github.com/infotraderbrothers-lgtm/traderbrothers-assets-logo/blob/main/Trader%20Brothers.png?raw=true" alt="Trader Brothers Logo">
+                </div>
+                <h2 class="thank-you-title">Thank You!</h2>
+                <p class="thank-you-message">
+                    We sincerely appreciate you taking the time to schedule your consultation with us. Your trust in Trader Brothers means everything to us.
+                </p>
+                <p class="thank-you-note">
+                    You will receive an email confirmation shortly, along with a reminder before your scheduled consultation time.
+                </p>
             </div>
         </div>
     </div>
@@ -477,6 +685,8 @@
 
         // Time slot selection
         const timeSlots = document.querySelectorAll('.time-slot');
+        const confirmBtn = document.getElementById('confirmBtn');
+        
         timeSlots.forEach(slot => {
             slot.addEventListener('click', function() {
                 if (!selectedDate) return;
@@ -484,7 +694,75 @@
                 timeSlots.forEach(s => s.classList.remove('selected'));
                 this.classList.add('selected');
                 selectedTime = this.dataset.time;
+                
+                // Enable confirm button when both date and time are selected
+                confirmBtn.disabled = false;
             });
+        });
+
+        // Confirm booking and send to webhook
+        confirmBtn.addEventListener('click', async function() {
+            if (!selectedDate || !selectedTime) return;
+            
+            const formattedNewDate = selectedDate.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+            
+            const bookingData = {
+                name: clientName || '',
+                email: clientEmail || '',
+                phone: clientPhone || '',
+                previousDate: previousDate || '',
+                previousTime: previousTime || '',
+                newDate: formattedNewDate,
+                newTime: selectedTime,
+                timestamp: new Date().toISOString()
+            };
+            
+            try {
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = 'Sending...';
+                
+                const response = await fetch('https://hook.eu2.make.com/ucnitcstxgfkkfn3lxoa4oj8uai17qrh', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(bookingData)
+                });
+                
+                if (response.ok) {
+                    // Show modal with booking information
+                    document.getElementById('modalName').textContent = bookingData.name || 'N/A';
+                    document.getElementById('modalEmail').textContent = bookingData.email || 'N/A';
+                    document.getElementById('modalPhone').textContent = bookingData.phone || 'N/A';
+                    document.getElementById('modalNewDate').textContent = formattedNewDate;
+                    document.getElementById('modalNewTime').textContent = selectedTime;
+                    
+                    document.getElementById('modalOverlay').classList.add('active');
+                } else {
+                    throw new Error('Failed to send booking');
+                }
+            } catch (error) {
+                console.error('Error sending booking:', error);
+                confirmBtn.textContent = 'Error - Try Again';
+                confirmBtn.style.background = '#d32f2f';
+                
+                setTimeout(() => {
+                    confirmBtn.textContent = 'Confirm Booking';
+                    confirmBtn.style.background = '#bc9c22';
+                    confirmBtn.disabled = false;
+                }, 3000);
+            }
+        });
+
+        // Exit button closes the window
+        document.getElementById('finishBtn').addEventListener('click', function() {
+            // Hide confirmation section and show thank you screen
+            document.getElementById('confirmationSection').style.display = 'none';
+            document.getElementById('thankYouSection').classList.add('active');
         });
 
         // Navigation
